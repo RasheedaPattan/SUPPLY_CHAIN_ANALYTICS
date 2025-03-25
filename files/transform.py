@@ -11,7 +11,7 @@ def replace_nan_with_mode(df):
                 mode_series = df[column].mode()
                 if not mode_series.empty:
                     mode_value = mode_series[0]
-                    df[column].fillna(mode_value, inplace=True)
+                    df[column] = df[column].fillna(mode_value)
         logging.info("NaN values replaced with mode successfully.")
         return df
     except Exception as e:

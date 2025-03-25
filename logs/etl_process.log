@@ -1,0 +1,13 @@
+2025-03-25 05:41:23,886:INFO:\U0001f504 Loading data...
+2025-03-25 05:41:24,109:INFO:CSV file loaded successfully.
+2025-03-25 05:41:24,111:INFO:Column names cleaned.
+2025-03-25 05:41:24,144:INFO:Date columns formatted successfully.
+2025-03-25 05:41:24,163:INFO:NaN values replaced with mode successfully.
+2025-03-25 05:41:24,164:INFO:\u2705 Data loaded and cleaned successfully.
+2025-03-25 05:41:24,164:INFO:Creating dimension tables...
+2025-03-25 05:41:24,274:INFO:Dimension tables created successfully.
+2025-03-25 05:41:24,274:INFO:Dimension tables created successfully.
+2025-03-25 05:41:24,274:INFO:Creating fact table...
+2025-03-25 05:41:24,381:INFO:Fact table created successfully with 10131 rows.
+2025-03-25 05:41:24,382:INFO:Fact table created successfully.
+2025-03-25 05:41:28,402:INFO:\u2705 ETL process completed successfully.

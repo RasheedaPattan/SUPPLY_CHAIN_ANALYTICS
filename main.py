@@ -1,36 +1,33 @@
 import logging
+import os
 import mysql.connector
 from files.load import load_data
 from files.transform import (
     clean_columns, preprocess_dates, 
     create_dimension_and_fact_tables, replace_nan_with_mode
 )
-from files.database import create_tables, save_and_insert_to_database
-from dashboard.config import DB_CONFIG  # ✅ MySQL DB Configuration Dictionary
+from files.database import get_db_connection, save_and_insert_to_database  # ✅ Import database functions
+from dashboard.config import DB_CONFIG  
+
+# ✅ Ensure logs directory exists
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)  
 
 # ✅ Logging setup
-logging.basicConfig(filename='etl_process.log', level=logging.INFO,
-                    format='%(asctime)s:%(levelname)s:%(message)s')
-
-def get_db_connection():
-    """Establish a MySQL database connection."""
-    try:
-        conn = mysql.connector.connect(**DB_CONFIG)
-        return conn
-    except mysql.connector.Error as e:
-        logging.error(f"❌ Database connection error: {e}")
-        return None
+logging.basicConfig(
+    filename=os.path.join(log_dir, 'etl_process.log'),
+    level=logging.INFO,
+    format='%(asctime)s:%(levelname)s:%(message)s'
+)
 
 def load_and_clean_data(file_path):
-    """
-    Load and clean the data.
-    """
+    """Load and clean the data."""
     try:
         logging.info("🔄 Loading data...")
-        df = load_data(file_path)
-        df = clean_columns(df)
-        df = preprocess_dates(df)
-        df = replace_nan_with_mode(df)
+        df = load_data(file_path)  # Load CSV
+        df = clean_columns(df)  # Clean column names
+        df = preprocess_dates(df)  # Convert dates
+        df = replace_nan_with_mode(df)  # Handle missing values
         logging.info("✅ Data loaded and cleaned successfully.")
         return df
     except Exception as e:
@@ -38,7 +35,7 @@ def load_and_clean_data(file_path):
         raise
 
 if __name__ == "__main__":
-    file_path = 'train.csv'
+    file_path = 'train.csv'  # ✅ Ensure this file exists in your project directory
 
     try:
         # ✅ Get Database Connection
@@ -55,13 +52,10 @@ if __name__ == "__main__":
         dims_and_fact = create_dimension_and_fact_tables(df)
         dim_customer, dim_product, dim_shipping, dim_region, dim_date, fact_sales = dims_and_fact
 
-        # ✅ Create Tables in MySQL
-        create_tables(cursor)
-
-        # ✅ Insert Data into Tables
+        # ✅ Insert Data into MySQL Tables
         save_and_insert_to_database(cursor, dim_customer, dim_product, dim_shipping, dim_region, fact_sales, dim_date)
 
-        # ✅ Commit and Close
+        # ✅ Commit changes and log success
         conn.commit()
         logging.info("✅ ETL process completed successfully.")
         print("✅ ETL process completed successfully!")

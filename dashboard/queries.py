@@ -35,10 +35,12 @@ SHIPPING_MODE_QUERY = """
 
 # Regional Sales Analysis
 REGION_SALES_QUERY = """
-    SELECT r.Region, SUM(f.Sales) as Total_Sales
-    FROM fact_sales f
-    JOIN dim_region r ON f.RegionKey = r.RegionKey
-    GROUP BY r.Region;
+SELECT r.Region, d.Year, SUM(f.Sales) AS Total_Sales
+FROM fact_sales f
+JOIN dim_region r ON f.RegionKey = r.RegionKey
+JOIN dim_date d ON f.OrderDateKey = d.DateKey  -- ✅ Added Date Table for Year Filtering
+GROUP BY r.Region, d.Year;
+
 """
 
 # Insert Data into `dim_product`
